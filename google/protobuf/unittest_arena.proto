@@ -28,17 +28,18 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-// Author: kenton@google.com (Kenton Varda)
-//
-// Tests that a "lite" message can import a regular message.
-
 syntax = "proto2";
-package protobuf_unittest;
 
-import "google/protobuf/unittest.proto";
+import "google/protobuf/unittest_no_arena_import.proto";
 
-option optimize_for = LITE_RUNTIME;
+package proto2_arena_unittest;
 
-message TestLiteImportsNonlite {
-  optional TestAllTypes message = 1;
+
+message NestedMessage {
+  optional int32 d = 1;
 }
+
+message ArenaMessage {
+  repeated NestedMessage  repeated_nested_message = 1;
+  repeated ImportNoArenaNestedMessage  repeated_import_no_arena_message = 2;
+};

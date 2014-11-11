@@ -28,17 +28,39 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-// Author: kenton@google.com (Kenton Varda)
-//
-// Tests that a "lite" message can import a regular message.
+syntax = "proto3";
 
-syntax = "proto2";
-package protobuf_unittest;
+package proto2_preserve_unknown_enum_unittest;
 
-import "google/protobuf/unittest.proto";
+enum MyEnum {
+  FOO = 0;
+  BAR = 1;
+  BAZ = 2;
+}
 
-option optimize_for = LITE_RUNTIME;
+enum MyEnumPlusExtra {
+  E_FOO = 0;
+  E_BAR = 1;
+  E_BAZ = 2;
+  E_EXTRA = 3;
+}
 
-message TestLiteImportsNonlite {
-  optional TestAllTypes message = 1;
+message MyMessage {
+  optional MyEnum e = 1;
+  repeated MyEnum repeated_e = 2;
+  repeated MyEnum repeated_packed_e = 3 [packed=true];
+  oneof o {
+    MyEnum oneof_e_1 = 4;
+    MyEnum oneof_e_2 = 5;
+  }
+}
+
+message MyMessagePlusExtra {
+  optional MyEnumPlusExtra e = 1;
+  repeated MyEnumPlusExtra repeated_e = 2;
+  repeated MyEnumPlusExtra repeated_packed_e = 3 [packed=true];
+  oneof o {
+    MyEnumPlusExtra oneof_e_1 = 4;
+    MyEnumPlusExtra oneof_e_2 = 5;
+  }
 }
