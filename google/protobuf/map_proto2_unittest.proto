@@ -28,58 +28,41 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-// Author: kenton@google.com (Kenton Varda)
-//  Based on original Protocol Buffers design by
-//  Sanjay Ghemawat, Jeff Dean, and others.
-//
-// This file contains messages for testing message_set_wire_format.
-
 syntax = "proto2";
+
+
+// We don't put this in a package within proto2 because we need to make sure
+// that the generated code doesn't depend on being in the proto2 namespace.
+// In map_test_util.h we do "using namespace unittest = protobuf_unittest".
 package protobuf_unittest;
 
-option cc_enable_arenas = true;
-option optimize_for = SPEED;
-
-// A message with message_set_wire_format.
-message TestMessageSet {
-  option message_set_wire_format = true;
-  extensions 4 to max;
+enum Proto2MapEnum {
+  PROTO2_MAP_ENUM_FOO   = 0;
+  PROTO2_MAP_ENUM_BAR   = 1;
+  PROTO2_MAP_ENUM_BAZ   = 2;
 }
 
-message TestMessageSetContainer {
-  optional TestMessageSet message_set = 1;
+enum Proto2MapEnumPlusExtra {
+  E_PROTO2_MAP_ENUM_FOO   = 0;
+  E_PROTO2_MAP_ENUM_BAR   = 1;
+  E_PROTO2_MAP_ENUM_BAZ   = 2;
+  E_PROTO2_MAP_ENUM_EXTRA = 3;
 }
 
-message TestMessageSetExtension1 {
-  extend TestMessageSet {
-    optional TestMessageSetExtension1 message_set_extension = 1545008;
-  }
-  optional int32 i = 15;
+enum Proto2MapEnumStartWithNonZero {
+  PROTO2_NON_ZERO_MAP_ENUM_FOO = 1;
 }
 
-message TestMessageSetExtension2 {
-  extend TestMessageSet {
-    optional TestMessageSetExtension2 message_set_extension = 1547769;
-  }
-  optional string str = 25;
+message TestEnumMap {
+  map<int32, Proto2MapEnum> known_map_field = 101;
+  map<int32, Proto2MapEnum> unknown_map_field = 102;
 }
 
-// This message was used to generate
-// //net/proto2/python/internal/testdata/message_set_message, but is commented
-// out since it must not actually exist in code, to simulate an "unknown"
-// extension.
-// message TestMessageSetUnknownExtension {
-//   extend TestMessageSet {
-//     optional TestMessageSetUnknownExtension message_set_extension = 56141421;
-//   }
-//   optional int64 a = 1;
-// }
-
-// MessageSet wire format is equivalent to this.
-message RawMessageSet {
-  repeated group Item = 1 {
-    required int32 type_id = 2;
-    required bytes message = 3;
-  }
+message TestEnumMapPlusExtra {
+  map<int32, Proto2MapEnumPlusExtra> known_map_field = 101;
+  map<int32, Proto2MapEnumPlusExtra> unknown_map_field = 102;
 }
 
+message TestEnumStartWithNonZeroMap {
+  map<int32, Proto2MapEnumStartWithNonZero> map_field = 101;
+}
