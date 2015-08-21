@@ -28,33 +28,41 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-// Definitions of protos for testing cross-version compatibility.  The
-// UpRevision message acts as if it were a newer version of the DownRevision
-// message.  That is, UpRevision shares all the same fields as DownRevision,
-// but UpRevision can add fields and add enum values.
-syntax = "proto2";
+// Author: kenton@google.com (Kenton Varda)
+//  Based on original Protocol Buffers design by
+//  Sanjay Ghemawat, Jeff Dean, and others.
+//
+// A proto file which is imported by unittest_proto3.proto to test importing.
 
-package google.protobuf.util;
+syntax = "proto3";
 
-message DownRevision {
-  enum Enum {
-    DEFAULT_VALUE = 2;
-    NONDEFAULT_VALUE = 3;
-  }
+// We don't put this in a package within proto2 because we need to make sure
+// that the generated code doesn't depend on being in the proto2 namespace.
+// In test_util.h we do
+// "using namespace unittest_import = protobuf_unittest_import".
+package protobuf_unittest_import;
 
-  optional Enum value = 1 [default = DEFAULT_VALUE];
-  repeated Enum values = 2;
+option optimize_for = SPEED;
+option cc_enable_arenas = true;
+
+// Exercise the java_package option.
+option java_package = "com.google.protobuf.test";
+option csharp_namespace = "Google.Protobuf.TestProtos";
+
+// Do not set a java_outer_classname here to verify that Proto2 works without
+// one.
+
+// Test public import
+import public "google/protobuf/unittest_import_public_proto3.proto";
+
+message ImportMessage {
+  int32 d = 1;
 }
 
-message UpRevision {
-  enum Enum {
-    DEFAULT_VALUE = 2;
-    NONDEFAULT_VALUE = 3;
-    NEW_VALUE = 4;
-    NEW_VALUE_2 = 5;
-    NEW_VALUE_3 = 6;
-  }
-
-  optional Enum value = 1 [default = DEFAULT_VALUE];
-  repeated Enum values = 2;
+enum ImportEnum {
+  IMPORT_ENUM_UNSPECIFIED = 0;
+  IMPORT_FOO = 7;
+  IMPORT_BAR = 8;
+  IMPORT_BAZ = 9;
 }
+
